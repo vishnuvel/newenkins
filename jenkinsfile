@@ -1,0 +1,44 @@
+pipeline 
+{
+     agent any
+     tools
+     {
+         maven 'maven3.6.2'
+     }
+     stages
+     {
+         stage('checkout')
+         {
+             steps
+             {
+                 git credentialsId: '0507a31d-50ce-4adf-a541-d11635497a18', url: 'https://github.com/mavenrepoq/maven.git'
+             }
+         }
+         stage('Build')
+         {
+             steps{
+                 sh "mvn clean package"
+             }
+         }
+         stage('Generate SonarQubeReport')
+         {
+             steps{
+                 sh "mvn sonar:sonar"
+             }
+         }
+       /*  stage('UploadArtfacts')
+         {
+             steps{
+                 sh "mvn deploy"
+             }
+         }*/
+         stage('Uplode to TomacatServer')
+         {
+             steps{
+                 sshagent(['2e12b7b2-1851-4bef-9736-a3b918e6477a']) {
+               sh "scp -o StrictHostKeyChecking=no target/maven-web-application.war ec2-user@13.234.122.46:/opt/tomcat9/webapps/"
+}
+                              }
+         }
+           }    
+}
