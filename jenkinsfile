@@ -26,12 +26,12 @@ pipeline
                  sh "mvn sonar:sonar"
              }
          }
-         /*stage('UploadArtfacts')
+         stage('UploadArtfacts')
          {
              steps{
                  sh "mvn deploy"
              }
-         }*/
+         }
          stage('Uplode to TomacatServer')
          {
              steps{
